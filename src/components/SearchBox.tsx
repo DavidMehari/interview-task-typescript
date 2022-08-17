@@ -1,5 +1,5 @@
 import {
-  Box, Chip, IconButton, TextField,
+  Box, Chip, IconButton, makeStyles, TextField,
 } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import SearchIcon from '@material-ui/icons/Search';
@@ -12,12 +12,21 @@ type Props = {
   setSearchResult: React.Dispatch<React.SetStateAction<any>>;
 };
 
+const useStyles = makeStyles({
+  centerBox: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+});
+
 export default function SearchBox({
   searchFailed,
   setSearchFailed,
   setSearchResult,
   searchPokemon,
 }: Props) {
+  const classes = useStyles();
+
   const [searchText, setSearchText] = useState('');
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +43,7 @@ export default function SearchBox({
 
   return (
     <>
-      <Box>
+      <Box className={classes.centerBox}>
         <TextField
           id="outlined-search"
           label="Search"

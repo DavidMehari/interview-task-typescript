@@ -66,8 +66,6 @@ export default function MainPage() {
       const pokemonAPIResp = await response.json();
       const pokemonSearchResult = pokemonAPIResp;
 
-      console.log(pokemonSearchResult);
-
       const pokemonFound: Pokemon = {
         name: pokemonSearchResult.name,
         price: pokemonSearchResult.weight * 100,
@@ -111,17 +109,19 @@ export default function MainPage() {
 
   return (
     <Container maxWidth="md">
-      <SearchBox
-        searchPokemon={searchPokemon}
-        searchFailed={searchFailed}
-        setSearchFailed={setSearchFailed}
-        setSearchResult={setSearchResult}
-      />
-      <Box>
+      <Box component="header">
+        <SearchBox
+          searchPokemon={searchPokemon}
+          searchFailed={searchFailed}
+          setSearchFailed={setSearchFailed}
+          setSearchResult={setSearchResult}
+        />
         <Typography variant="h3" align="center" component="h1" gutterBottom>
           Pokemon Shop
         </Typography>
-        <Box className={classes.flexSpaceAround}>
+      </Box>
+      <Box component="main">
+        <Box className={classes.flexSpaceAround} component="section">
           <Box className={classes.balanceBox}>
             <BalanceDisplay myBalance={myBalance} />
           </Box>
@@ -129,26 +129,22 @@ export default function MainPage() {
             <AddMoneyToBalance addMoney={addMoney} />
           </Box>
         </Box>
+
+        <Grid container spacing={3}>
+          <Grid item xs={8}>
+            {!searchFailed && (
+              <ListOfPokemons
+                pokemonList={searchResult ? [searchResult] : pokemonList}
+                buyPokemon={buyPokemon}
+              />
+            )}
+          </Grid>
+          <Grid item xs={4}>
+            <Pocket pocket={pocket} />
+          </Grid>
+        </Grid>
       </Box>
-      <Grid container spacing={3}>
-        <Grid item xs={8}>
-          {!searchFailed && (
-            <ListOfPokemons
-              pokemonList={searchResult ? [searchResult] : pokemonList}
-              buyPokemon={buyPokemon}
-            />
-          )}
-        </Grid>
-        <Grid item xs={4}>
-          <Pocket pocket={pocket} />
-        </Grid>
-      </Grid>
       <Alert open={alertOpen} setOpen={setAlertOpen} />
     </Container>
   );
 }
-
-/* Questions:
-  - are pokemons unique (can I buy 2 with the same name?)
-  - add money only positive
-*/
