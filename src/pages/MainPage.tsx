@@ -1,10 +1,15 @@
 import {
   Box,
+  Chip,
   Container,
   Grid,
+  IconButton,
   makeStyles,
+  TextField,
   Typography,
 } from '@material-ui/core';
+import ErrorIcon from '@material-ui/icons/Error';
+import SearchIcon from '@material-ui/icons/Search';
 import { useEffect, useState } from 'react';
 
 import AddMoneyToBalance from '../components/AddMoneyToBalance';
@@ -33,6 +38,9 @@ export default function MainPage() {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [pocket, setPocket] = useState<Pokemon[]>([]);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [searchResult, setSearchResult] = useState<Pokemon>();
+  const [searchFailed, setSearchFailed] = useState(false);
 
   const getPokemonPrice = async (pokemonUrl: string): Promise<number> => {
     const response = await fetch(pokemonUrl);
@@ -56,6 +64,24 @@ export default function MainPage() {
     return pokemonsWithPriceArr;
   };
 
+  const getPokemonByName = async (name: string) => {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+    if (response.status === 200) {
+      const pokemonAPIResp = await response.json();
+      const pokemonSearchResult = pokemonAPIResp;
+
+      console.log(pokemonSearchResult);
+
+      const pokemonFound: Pokemon = {
+        name: pokemonSearchResult.name,
+        price: pokemonSearchResult.weight * 100,
+      };
+
+      return pokemonFound;
+    }
+    return null;
+  };
+
   const buyPokemon = (pokemon: Pokemon) => {
     if (myBalance - pokemon.price >= 0) {
       setPocket((prev: Pokemon[]) => [...prev, pokemon]);
@@ -74,8 +100,52 @@ export default function MainPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const searchPokemon = async (pokemonName: string) => {
+    if (pokemonName) {
+      const result = await getPokemonByName(pokemonName);
+      if (result == null) {
+        setSearchFailed(true);
+        setSearchResult(undefined);
+      } else {
+        setSearchResult(result);
+        setSearchFailed(false);
+      }
+    } else {
+      setSearchResult(undefined);
+      setSearchFailed(false);
+    }
+  };
+
   return (
     <Container maxWidth="md">
+      <Box>
+        <TextField
+          id="outlined-search"
+          label="Search"
+          type="search"
+          variant="outlined"
+          onChange={handleSearchChange}
+          size="small"
+        />
+        <IconButton
+          color="primary"
+          aria-label="Search"
+          onClick={() => searchPokemon(searchText)}
+        >
+          <SearchIcon />
+        </IconButton>
+      </Box>
+      {searchFailed && (
+        <Chip
+          color="secondary"
+          label="There is no pokemon with that name"
+          icon={<ErrorIcon />}
+        />
+      )}
       <Box>
         <Typography variant="h3" align="center" component="h1" gutterBottom>
           Pokemon Shop
@@ -91,7 +161,12 @@ export default function MainPage() {
       </Box>
       <Grid container spacing={3}>
         <Grid item xs={8}>
-          <ListOfPokemons pokemonList={pokemonList} buyPokemon={buyPokemon} />
+          {!searchFailed && (
+            <ListOfPokemons
+              pokemonList={searchResult ? [searchResult] : pokemonList}
+              buyPokemon={buyPokemon}
+            />
+          )}
         </Grid>
         <Grid item xs={4}>
           <Pocket pocket={pocket} />
