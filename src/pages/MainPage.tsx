@@ -1,15 +1,10 @@
 import {
   Box,
-  Chip,
   Container,
   Grid,
-  IconButton,
   makeStyles,
-  TextField,
   Typography,
 } from '@material-ui/core';
-import ErrorIcon from '@material-ui/icons/Error';
-import SearchIcon from '@material-ui/icons/Search';
 import { useEffect, useState } from 'react';
 
 import AddMoneyToBalance from '../components/AddMoneyToBalance';
@@ -17,6 +12,7 @@ import Alert from '../components/Alert';
 import BalanceDisplay from '../components/BalanceDisplay';
 import ListOfPokemons from '../components/ListOfPokemons';
 import Pocket from '../components/Pocket';
+import SearchBox from '../components/SearchBox';
 import { Pokemon } from '../interfaces/interfaces';
 
 const useStyles = makeStyles({
@@ -38,7 +34,7 @@ export default function MainPage() {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [pocket, setPocket] = useState<Pokemon[]>([]);
   const [alertOpen, setAlertOpen] = useState(false);
-  const [searchText, setSearchText] = useState('');
+
   const [searchResult, setSearchResult] = useState<Pokemon>();
   const [searchFailed, setSearchFailed] = useState(false);
 
@@ -100,10 +96,6 @@ export default function MainPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
-
   const searchPokemon = async (pokemonName: string) => {
     if (pokemonName) {
       const result = await getPokemonByName(pokemonName);
@@ -114,38 +106,17 @@ export default function MainPage() {
         setSearchResult(result);
         setSearchFailed(false);
       }
-    } else {
-      setSearchResult(undefined);
-      setSearchFailed(false);
     }
   };
 
   return (
     <Container maxWidth="md">
-      <Box>
-        <TextField
-          id="outlined-search"
-          label="Search"
-          type="search"
-          variant="outlined"
-          onChange={handleSearchChange}
-          size="small"
-        />
-        <IconButton
-          color="primary"
-          aria-label="Search"
-          onClick={() => searchPokemon(searchText)}
-        >
-          <SearchIcon />
-        </IconButton>
-      </Box>
-      {searchFailed && (
-        <Chip
-          color="secondary"
-          label="There is no pokemon with that name"
-          icon={<ErrorIcon />}
-        />
-      )}
+      <SearchBox
+        searchPokemon={searchPokemon}
+        searchFailed={searchFailed}
+        setSearchFailed={setSearchFailed}
+        setSearchResult={setSearchResult}
+      />
       <Box>
         <Typography variant="h3" align="center" component="h1" gutterBottom>
           Pokemon Shop
