@@ -8,7 +8,9 @@ type Props = {
 export default function AddMoneyToBalance({ addMoney }: Props) {
   const [addMoneyAmount, setAddMoneyAmount] = useState(0);
 
-  const handleAddMoneyAmountChange = (e: any) => {
+  const handleAddMoneyAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (parseInt(e.target.value, 10) <= 0) return;
+
     setAddMoneyAmount(parseInt(e.target.value, 10));
   };
 
@@ -21,6 +23,7 @@ export default function AddMoneyToBalance({ addMoney }: Props) {
         InputLabelProps={{
           shrink: true,
         }}
+        InputProps={{ inputProps: { min: 0 } }}
         variant="outlined"
         value={addMoneyAmount}
         onChange={handleAddMoneyAmountChange}

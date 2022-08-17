@@ -104,6 +104,5 @@ export default function MainPage() {
 
 /* Questions:
   - are pokemons unique (can I buy 2 with the same name?)
-  - balance can go to minus?
   - add money only positive
 */
