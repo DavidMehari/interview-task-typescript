@@ -60,7 +60,7 @@ export default function MainPage() {
     return pokemonsWithPriceArr;
   };
 
-  const getPokemonByName = async (name: string) => {
+  const getPokemonByName = async (name: string): Promise<Pokemon | null> => {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
     if (response.status === 200) {
       const pokemonAPIResp = await response.json();
@@ -70,13 +70,12 @@ export default function MainPage() {
         name: pokemonSearchResult.name,
         price: pokemonSearchResult.weight * 100,
       };
-
       return pokemonFound;
     }
     return null;
   };
 
-  const buyPokemon = (pokemon: Pokemon) => {
+  const buyPokemon = (pokemon: Pokemon): void => {
     if (myBalance - pokemon.price >= 0) {
       setPocket((prev: Pokemon[]) => [...prev, pokemon]);
       setMyBalance((prev) => prev - pokemon.price);
@@ -85,7 +84,7 @@ export default function MainPage() {
     }
   };
 
-  const addMoney = (amount: number) => {
+  const addMoney = (amount: number): void => {
     setMyBalance((prev) => prev + amount);
   };
 
@@ -94,7 +93,7 @@ export default function MainPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const searchPokemon = async (pokemonName: string) => {
+  const searchPokemon = async (pokemonName: string): Promise<void> => {
     if (pokemonName) {
       const result = await getPokemonByName(pokemonName);
       if (result == null) {

@@ -7,7 +7,7 @@ type Props = {
 };
 
 export default function Alert({ open, setOpen }: Props) {
-  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+  const handleClose = (event?: React.SyntheticEvent, reason?: string): void => {
     if (reason === 'clickaway') {
       return;
     }

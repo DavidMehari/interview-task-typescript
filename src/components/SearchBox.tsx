@@ -29,7 +29,7 @@ export default function SearchBox({
 
   const [searchText, setSearchText] = useState('');
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchText(e.target.value);
   };
 
