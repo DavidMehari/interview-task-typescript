@@ -15,7 +15,8 @@ type Props = {
 const useStyles = makeStyles({
   centerBox: {
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 });
 
@@ -42,8 +43,8 @@ export default function SearchBox({
   }, [searchText]);
 
   return (
-    <>
-      <Box className={classes.centerBox}>
+    <Box className={classes.centerBox}>
+      <Box>
         <TextField
           id="outlined-search"
           label="Search"
@@ -67,6 +68,6 @@ export default function SearchBox({
           icon={<ErrorIcon />}
         />
       )}
-    </>
+    </Box>
   );
 }
