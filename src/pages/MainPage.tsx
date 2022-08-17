@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import AddMoneyToBalance from '../components/AddMoneyToBalance';
+import Alert from '../components/Alert';
 import BalanceDisplay from '../components/BalanceDisplay';
 import ListOfPokemons from '../components/ListOfPokemons';
 import Pocket from '../components/Pocket';
@@ -31,6 +32,7 @@ export default function MainPage() {
   const [myBalance, setMyBalance] = useState(15000);
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [pocket, setPocket] = useState<Pokemon[]>([]);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const getPokemonPrice = async (pokemonUrl: string): Promise<number> => {
     const response = await fetch(pokemonUrl);
@@ -55,8 +57,12 @@ export default function MainPage() {
   };
 
   const buyPokemon = (pokemon: Pokemon) => {
-    setPocket((prev: Pokemon[]) => [...prev, pokemon]);
-    setMyBalance((prev) => prev - pokemon.price);
+    if (myBalance - pokemon.price >= 0) {
+      setPocket((prev: Pokemon[]) => [...prev, pokemon]);
+      setMyBalance((prev) => prev - pokemon.price);
+    } else {
+      setAlertOpen(true);
+    }
   };
 
   const addMoney = (amount: number) => {
@@ -69,7 +75,7 @@ export default function MainPage() {
   }, []);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="md">
       <Box>
         <Typography variant="h3" align="center" component="h1" gutterBottom>
           Pokemon Shop
@@ -91,6 +97,7 @@ export default function MainPage() {
           <Pocket pocket={pocket} />
         </Grid>
       </Grid>
+      <Alert open={alertOpen} setOpen={setAlertOpen} />
     </Container>
   );
 }
@@ -98,4 +105,5 @@ export default function MainPage() {
 /* Questions:
   - are pokemons unique (can I buy 2 with the same name?)
   - balance can go to minus?
+  - add money only positive
 */
