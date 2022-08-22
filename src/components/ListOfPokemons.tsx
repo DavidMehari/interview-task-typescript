@@ -32,7 +32,7 @@ export default function ListOfPokemons({ pokemonList, buyPokemon }: Props) {
 
   return (
     <List>
-      {pokemonList.map((pokemon: any) => (
+      {pokemonList.map((pokemon: Pokemon) => (
         <ListItem className={classes.listItem} key={pokemon.name}>
           <ListItemText primary={pokemon.name} />
           <ListItemText primary={pokemon.price} />

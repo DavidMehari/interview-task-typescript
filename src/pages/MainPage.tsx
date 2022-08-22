@@ -5,7 +5,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import AddMoneyToBalance from '../components/AddMoneyToBalance';
 import Alert from '../components/Alert';
@@ -45,7 +45,7 @@ export default function MainPage() {
     return pokemonObj.weight * 100;
   };
 
-  const getPokemons = async () => {
+  const getPokemons = useCallback(async () => {
     const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
     const pokemonAPIResp = await response.json();
     const pokemonsArr = pokemonAPIResp.results;
@@ -58,7 +58,7 @@ export default function MainPage() {
     );
 
     return pokemonsWithPriceArr;
-  };
+  }, []);
 
   const getPokemonByName = async (name: string): Promise<Pokemon | null> => {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -77,7 +77,7 @@ export default function MainPage() {
 
   const buyPokemon = (pokemon: Pokemon): void => {
     if (myBalance - pokemon.price >= 0) {
-      setPocket((prev: Pokemon[]) => [...prev, pokemon]);
+      setPocket((prev) => [...prev, pokemon]);
       setMyBalance((prev) => prev - pokemon.price);
     } else {
       setAlertOpen(true);
@@ -90,8 +90,7 @@ export default function MainPage() {
 
   useEffect(() => {
     getPokemons().then((pokemons: Pokemon[]) => setPokemonList(pokemons));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getPokemons]);
 
   const searchPokemon = async (pokemonName: string): Promise<void> => {
     if (pokemonName) {

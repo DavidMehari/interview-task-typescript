@@ -20,6 +20,8 @@ const useStyles = makeStyles({
   },
 });
 
+let timeout: NodeJS.Timeout;
+
 export default function SearchBox({
   searchFailed,
   setSearchFailed,
@@ -32,6 +34,10 @@ export default function SearchBox({
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchText(e.target.value);
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      searchPokemon(e.target.value);
+    }, 1500);
   };
 
   useEffect(() => {
@@ -39,8 +45,7 @@ export default function SearchBox({
       setSearchResult(undefined);
       setSearchFailed(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText]);
+  }, [searchText, setSearchFailed, setSearchResult]);
 
   return (
     <Box className={classes.centerBox}>
