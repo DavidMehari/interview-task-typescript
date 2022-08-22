@@ -6,6 +6,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Pokemon } from '../interfaces/interfaces';
 
@@ -34,9 +35,8 @@ export default function Pocket({ pocket }: Props) {
           My pocket
         </Typography>
         <List>
-          {pocket.map((pokemon: any, i: number) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <ListItem className={classes.pocketListItem} key={i}>
+          {pocket.map((pokemon: any) => (
+            <ListItem className={classes.pocketListItem} key={uuidv4()}>
               <ListItemText primary={`- ${pokemon.name}`} />
             </ListItem>
           ))}
