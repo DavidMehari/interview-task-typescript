@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Pokemon } from '../interfaces/interfaces';
+import { MappedPocket, Pokemon } from '../interfaces/interfaces';
 
 const useStyles = makeStyles({
   pocketListItem: {
@@ -25,6 +25,12 @@ type Props = {
   pocket: Pokemon[];
 };
 
+const countDuplicates = (pokemons: Pokemon[]) => {
+  const counts: MappedPocket = {};
+  pokemons.forEach((pokemon) => { counts[pokemon.name] = (counts[pokemon.name] || 0) + 1; });
+  return counts;
+};
+
 export default function Pocket({ pocket }: Props) {
   const classes = useStyles();
 
@@ -35,9 +41,12 @@ export default function Pocket({ pocket }: Props) {
           My pocket
         </Typography>
         <List>
-          {pocket.map((pokemon: any) => (
+          {Object.entries(countDuplicates(pocket)).map((pokemon) => (
             <ListItem className={classes.pocketListItem} key={uuidv4()}>
-              <ListItemText primary={`- ${pokemon.name}`} />
+              <ListItemText>
+                {pokemon[0]}
+                {pokemon[1] > 1 && ` - ${pokemon[1]}x`}
+              </ListItemText>
             </ListItem>
           ))}
         </List>
